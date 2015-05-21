@@ -1,4 +1,7 @@
 #!/bin/bash
+echo 'create str_to_table stored procedure...'
+nzsql nzdb -f str_to_table.sql
+
 echo 'create args_to_table stored procedure...'
 nzsql nzdb -f args_to_table.sql
 

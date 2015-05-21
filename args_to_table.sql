@@ -8,46 +8,25 @@ create or replace procedure args_to_table(varchar(any))
 begin_proc
 declare
 	args alias for $1;
-	current_arg varchar(4101);
-	current_arg_name varchar(100);
-	current_arg_value varchar(4000);
-	args_length int;
-	arg_s int;
-	arg_e int;
+	arg_name varchar(100);
+	arg_value varchar(4000);
 	arg_sep int;
-	arg_num int;
+	arg_rec record;
 begin
-	args_length := length(args);
-	arg_s := 1;
-	arg_num := 1;
-
-	while arg_s <= args_length loop
-		arg_e := position(',' in substr(args, arg_s));
-
-		if arg_e = 0 then
-			arg_e := args_length + 1;
-		else
-			arg_e := arg_e + arg_s - 1;
+	for arg_rec in select str_to_table(',', args) loop
+		if arg_rec.value is null or arg_rec.value = '' then
+			raise exception 'Argument #% is empty.', arg_rec.num;
 		end if;
 
-		current_arg := trim(substr(args, arg_s, arg_e - arg_s));
-
-		if current_arg = '' then
-			raise exception 'Argument #% is empty.', arg_num;
-		end if;
-
-		arg_sep := position('=' in current_arg);
+		arg_sep := position('=' in arg_rec.value);
 		if arg_sep = 0 then
-			raise exception 'Argument #% (''%'') expected to have name and value part separated with ''=''.', arg_num, current_arg;
+			raise exception 'Argument #% (''%'') expected to have name and value separated with ''=''.', arg_rec.num, arg_rec.value;
 		end if;
 
-		current_arg_name := trim(substr(current_arg, 1, arg_sep - 1));
-		current_arg_value := trim(substr(current_arg, arg_sep + 1));
+		arg_name := trim(substr(arg_rec.value, 1, arg_sep - 1));
+		arg_value := trim(substr(arg_rec.value, arg_sep + 1));
 
-		execute immediate 'insert into ' || reftablename || ' values (''' || current_arg_name || ''', ''' || current_arg_value || ''')';
-
-		arg_s := arg_e + 1;
-		arg_num := arg_num + 1;
+		execute immediate 'insert into ' || reftablename || ' values (''' || arg_name || ''', ''' || arg_value || ''')';
 	end loop;
 
 	return reftable;
