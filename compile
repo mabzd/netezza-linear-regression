@@ -1,4 +1,8 @@
 #!/bin/bash
+echo 'create args_to_table stored procedure...'
+nzsql nzdb -f args_to_table.sql
+
+echo 'compile test udtf...'
 cp test.cpp test2.cpp
 nzudxcompile --sig "TestFun(VARCHAR(ANY))" --return "TABLE(v VARCHAR(200))" --class TestUdtf --version 2 test2.cpp --user nzu --pw 12345 --db nzdb
 rm test2.cpp
