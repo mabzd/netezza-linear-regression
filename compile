@@ -5,6 +5,9 @@ nzsql nzdb -f str_to_table.sql
 echo 'create args_to_table stored procedure...'
 nzsql nzdb -f args_to_table.sql
 
+echo 'create create_csv_table stored procedure...'
+nzsql nzdb -f create_csv_table.sql
+
 echo 'compile test udtf...'
 cp XTXMatrixUdtf.cpp XTXMatrixUdtf2.cpp
 nzudxcompile --sig "XTXMatrix(varargs)" --return "TABLE(x int, y int, value double)" --class XTXMatrixUdtf --version 2 XTXMatrixUdtf2.cpp --user nzu --pw 12345 --db nzdb --lastcall "TABLE FINAL"
