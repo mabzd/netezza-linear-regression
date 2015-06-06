@@ -1,7 +1,7 @@
 create table str_to_table_reftable(num int, value varchar(4000));
 
 -- Converts string to table representation.
--- Arguments string must be formatted as 'name1=value1, name2=value2, ...'.
+-- Usage str_to_table(<delimeter>, <string>).
 create or replace procedure str_to_table(char, varchar(any)) 
 	returns reftable(str_to_table_reftable)
 	language nzplsql as
@@ -21,7 +21,7 @@ begin
 	str_num := 1;
 
 	while str_s <= str_length loop
-		str_e := position(',' in substr(str, str_s));
+		str_e := position(delim in substr(str, str_s));
 
 		if str_e = 0 then
 			str_e := str_length + 1;

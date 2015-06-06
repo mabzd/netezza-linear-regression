@@ -34,3 +34,6 @@ echo 'compile CalcLRBVecUdtf udtf...'
 cp CalcLRBVecUdtf.cpp CalcLRBVecUdtf2.cpp
 nzudxcompile --sig "CalcLRBVec(varargs)" --return "TABLE(b int, value double)" --class CalcLRBVecUdtf --version 2 CalcLRBVecUdtf2.cpp --user nzu --pw 12345 --db nzdb --unfenced --lastcall "TABLE FINAL"
 rm CalcLRBVecUdtf2.cpp
+
+echo 'create linear_regression stored procedure...'
+nzsql nzdb -f linear_regression.sql

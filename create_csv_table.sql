@@ -1,7 +1,7 @@
 -- Creates table imported from CSV file
 -- Usage create_csv_table(<table_name>, <cols>, <file_path>, <delim>)
 create or replace procedure create_csv_table(varchar(any), int, varchar(any), char) 
-	returns reftable(str_to_table_reftable)
+	returns boolean
 	language nzplsql as
 begin_proc
 declare
@@ -20,5 +20,7 @@ begin
 	execute immediate create_table_sql;
 
 	execute immediate 'insert into ' || table_name || ' select * from external ''' || file_path || ''' using(delimiter ''' || delim || ''');';
+
+	return true;
 end;
 end_proc;
