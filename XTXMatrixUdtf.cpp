@@ -17,16 +17,24 @@ class XTXMatrixUdtf : public Udtf
 			args(0),
 			outputMatrixSize(0),
 			outputMatrix(NULL),
+			inputArguments(NULL),
 			eoiRowNum(0)
 		{
 		}
 
 		~XTXMatrixUdtf()
 		{
-			delete[] outputMatrix;
-			outputMatrix = NULL;
-			delete[] inputArguments;
-			inputArguments = NULL;
+			if (outputMatrix != NULL)
+			{
+				delete[] outputMatrix;
+				outputMatrix = NULL;
+			}
+
+			if (inputArguments != NULL)
+			{
+				delete[] inputArguments;
+				inputArguments = NULL;
+			}
 		}
 
 		static Udtf* instantiate(UdxInit*);
