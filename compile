@@ -20,12 +20,17 @@ cp XTXMatrixUdtf.cpp XTXMatrixUdtf2.cpp
 nzudxcompile --sig "XTXMatrix(varargs)" --return "TABLE(x int, y int, value double)" --class XTXMatrixUdtf --version 2 XTXMatrixUdtf2.cpp --user nzu --pw 12345 --db nzdb --lastcall "TABLE FINAL"
 rm XTXMatrixUdtf2.cpp
 
-echo 'compile SqMatrixPadUdf udtf...'
+echo 'compile SqMatrixPadUdf udf...'
 cp SqMatrixPadUdf.cpp SqMatrixPadUdf2.cpp
 nzudxcompile --sig "SqMatrixPad(int, int, int, double)" --return "BOOL" --class SqMatrixPadUdf --version 2 SqMatrixPadUdf2.cpp --user nzu --pw 12345 --db nzdb --unfenced --nondet
 rm SqMatrixPadUdf2.cpp
 
-echo 'compile InvSqMatrixPadUdf udtf...'
+echo 'compile InvSqMatrixPadUdf udf...'
 cp InvSqMatrixPadUdf.cpp InvSqMatrixPadUdf2.cpp
 nzudxcompile --sig "InvSqMatrixPad()" --return "BOOL" --class InvSqMatrixPadUdf --version 2 InvSqMatrixPadUdf2.cpp --user nzu --pw 12345 --db nzdb --unfenced --nondet --args "-I${NZLRROOT}/include/eigen" 
 rm InvSqMatrixPadUdf2.cpp
+
+echo 'compile CalcLRBVecUdtf udtf...'
+cp CalcLRBVecUdtf.cpp CalcLRBVecUdtf2.cpp
+nzudxcompile --sig "CalcLRBVec(varargs)" --return "TABLE(b int, value double)" --class CalcLRBVecUdtf --version 2 CalcLRBVecUdtf2.cpp --user nzu --pw 12345 --db nzdb --unfenced --lastcall "TABLE FINAL"
+rm CalcLRBVecUdtf2.cpp
