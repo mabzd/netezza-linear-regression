@@ -39,3 +39,11 @@ Usage:
  2 |   0.5
 (3 rows)
 ```
+
+## Installation
+
+Clone this repository on your Netezza HOST machine. Edit `compile` script and set variables `NZLRUSER`, `NZLRPASS` and `NZLRDB` so they can represent your username, password and database respectively. Run:
+```
+./compile
+```
+Notice: first compilation will throw few exceptions complaining about dropping nonexistent procedures and tables.
