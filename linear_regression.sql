@@ -69,7 +69,7 @@ begin
 		if rec.num != 1 then
 			input_cols_str := input_cols_str || ',';
 		end if;
-		input_cols_str := input_cols_str || 't.' || trim(both ' ' from rec.value);
+		input_cols_str := input_cols_str || 'cast(t.' || rec.value || ' as double)';
 		cols_count := cols_count + 1;
 	end loop;
 
@@ -92,7 +92,7 @@ begin
 	-- 4) calculate final B-coefficients vector
 	execute immediate  'insert into ' || reftablename || ' '
 		|| 'select f.b as b, sum(f.value) as value '
-		|| 'from ' || input_table || ' t, table with final(calclrbvec(' || input_cols_str || ', cast(1.0 as double), t.' || target_col || ')) f '
+		|| 'from ' || input_table || ' t, table with final(calclrbvec(' || input_cols_str || ', cast(1.0 as double), cast(t.' || target_col || ' as double))) f '
 		|| 'group by f.b';
 
 	drop table xtx_table;
