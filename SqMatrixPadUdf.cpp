@@ -20,12 +20,13 @@ class SqMatrixPadUdf : public Udf
 		virtual ReturnValue evaluate()
 		{
 			bool padCreated = false;
-			int32 dimension = int32Arg(0);
 			CPad* pad = getPad("SqMatrixPad");
 			SqMatrix* sqMatrix = (SqMatrix*) pad->getRootObject(sizeof(SqMatrix));
 
 			if (sqMatrix == NULL)
 			{
+				int32 dimension = int32Arg(0);
+
 				if (dimension <= 0)
 					throwUdxException("Expected positive matrix dimension.");
 
