@@ -1,3 +1,6 @@
+drop procedure linear_regression(varchar(any));
+drop table linear_regression_reftable;
+
 create table linear_regression_reftable(b int, value double);
 
 -- Calculates multivariate linear regression model.
@@ -18,10 +21,6 @@ declare
 	rec record;
 begin
 	create local temp table args_table as
-	select * from args_to_table_reftable
-	limit 0;
-
-	insert into args_table
 	select args_to_table(args);
 
 	if (select count(*) from args_table) != 4 then
@@ -42,7 +41,7 @@ begin
 	where lower(name) = 'input_table'
 	limit 1;
 
-	if not found then
+	if not found or input_table = '' then
 		raise exception 'Argument ''input_table'' not found.';
 	end if;
 
@@ -51,7 +50,7 @@ begin
 	where lower(name) = 'input_col'
 	limit 1;
 
-	if not found then
+	if not found or input_cols = '' then
 		raise exception 'Argument ''input_col'' not found.';
 	end if;
 
@@ -60,7 +59,7 @@ begin
 	where lower(name) = 'target'
 	limit 1;
 
-	if not found then
+	if not found or target_col = '' then
 		raise exception 'Argument ''target'' not found.';
 	end if;
 

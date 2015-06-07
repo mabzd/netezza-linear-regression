@@ -1,3 +1,6 @@
+drop procedure str_to_table(char, varchar(any));
+drop table str_to_table_reftable;
+
 create table str_to_table_reftable(num int, value varchar(4000));
 
 -- Converts string to table representation.

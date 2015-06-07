@@ -1,3 +1,6 @@
+drop procedure args_to_table(varchar(any));
+drop table args_to_table_reftable;
+
 create table args_to_table_reftable(name varchar(100), value varchar(4000));
 
 -- Converts arguments string to table representation.
