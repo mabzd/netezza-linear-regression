@@ -6,6 +6,7 @@ create table linear_regression_reftable(b int, value double);
 -- Calculates multivariate linear regression model.
 -- Arguments must be formatted as: 'model=linear_model, input_table=<table_name>,
 -- input_col=<col1_name>; <col2_name>; ..., target=<col_name>'.
+-- Returns B-coefficients vector as set of rows: <coefficient number>, <coefficient value>.
 create or replace procedure linear_regression(varchar(any)) 
 	returns reftable(linear_regression_reftable)
 	language nzplsql as
@@ -73,7 +74,7 @@ begin
 	end loop;
 
 	workspace := 'select xtx.x as x, xtx.y as y, sum(xtx.value) as value ' 
-		|| 'from ' || input_table || ' t, table with final(xtxmatrix(' || input_cols_str || ')) xtx '
+		|| 'from ' || input_table || ' t, table with final(xtxmatrix(' || input_cols_str || ', cast(1.0 as double))) xtx '
 		|| 'group by xtx.x, xtx.y';
 
 	execute immediate 'create temp table xtx_table as ' 
@@ -82,7 +83,7 @@ begin
 		|| 'distribute on (dsid)';
 
 	-- 2) load XTX matrix to SPU memory
-	execute immediate 'select sqmatrixpad(' || cols_count || ', x, y, value) '
+	execute immediate 'select sqmatrixpad(' || cols_count + 1 || ', x, y, value) '
 		|| 'from xtx_table';
 
 	-- 3) calculate XTX inverse on all SPUs
@@ -91,7 +92,7 @@ begin
 	-- 4) calculate final B-coefficients vector
 	execute immediate  'insert into ' || reftablename || ' '
 		|| 'select f.b as b, sum(f.value) as value '
-		|| 'from ' || input_table || ' t, table with final(calclrbvec(' || input_cols_str || ',t.' || target_col || ')) f '
+		|| 'from ' || input_table || ' t, table with final(calclrbvec(' || input_cols_str || ', cast(1.0 as double), t.' || target_col || ')) f '
 		|| 'group by f.b';
 
 	drop table xtx_table;
